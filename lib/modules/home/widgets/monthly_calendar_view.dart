@@ -44,12 +44,11 @@ class _MonthlyCalendarViewState extends State<MonthlyCalendarView> {
           ),
           const SizedBox(height: 10),
           SizedBox(
-            height: 120,
+            height: 100,
             child: ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
-              reverse: true,
               itemCount: 20,
               itemBuilder: (context, index) {
                 return Column(
@@ -60,9 +59,9 @@ class _MonthlyCalendarViewState extends State<MonthlyCalendarView> {
                       width: 12,
                       decoration: BoxDecoration(
                         color: CustomColors.primary,
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(4),
                       ),
-                      margin: const EdgeInsets.all(4),
+                      margin: const EdgeInsets.all(2),
                     ),
                   ),
                 );
