@@ -1,5 +1,5 @@
 import 'package:attendo/modules/onboarding/screens/login.dart';
-import 'package:attendo/modules/shared/screens/home_screen.dart';
+import 'package:attendo/modules/home/screens/home_screen.dart';
 import 'package:attendo/modules/shared/widgets/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
