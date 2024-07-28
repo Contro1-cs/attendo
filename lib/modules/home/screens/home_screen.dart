@@ -1,9 +1,9 @@
 import 'package:attendo/modules/home/widgets/clock_in_out.dart';
 import 'package:attendo/modules/home/widgets/general_section.dart';
-import 'package:attendo/modules/home/widgets/image_tile.dart';
 import 'package:attendo/modules/home/widgets/monthly_calendar_view.dart';
 import 'package:attendo/modules/shared/widgets/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,34 +23,79 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
-      body: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              MonthlyCalendarView(),
-              SizedBox(height: 10),
-              ClockInOut(),
-              SizedBox(height: 20),
+              const MonthlyCalendarView(),
+              const SizedBox(height: 10),
+              const ClockInOut(),
+              const SizedBox(height: 20),
               Row(
                 children: [
-                  ImageTile(
-                    image: "assets/icons/illustration1.svg",
-                    title: "Apply for leave",
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: CustomColors.redBg,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.arrow_outward_rounded,
+                            color: CustomColors.red,
+                            size: 24,
+                          ),
+                          Text(
+                            "Apply for leave",
+                            style: TextStyle(
+                              color: CustomColors.red,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                  ImageTile(
-                    image: "assets/icons/illustration2.svg",
-                    title: "Take a sick leave",
-                  ),
-                  ImageTile(
-                    image: "assets/icons/illustration3.svg",
-                    title: "Leaves History",
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: CustomColors.greenBg,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.history_rounded,
+                            color: CustomColors.green,
+                            size: 24,
+                          ),
+                          Text(
+                            "View leave history",
+                            style: TextStyle(
+                              color: CustomColors.green,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-              GeneralSection(),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
+              const GeneralSection(),
+              const SizedBox(height: 20),
             ],
           ),
         ),

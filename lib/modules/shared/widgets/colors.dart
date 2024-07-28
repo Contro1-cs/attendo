@@ -10,4 +10,6 @@ abstract final class CustomColors {
   static const Color black = Color(0XFF090909);
   static const Color redBg = Color(0XFFFFE0E0);
   static const Color red = Color(0XFFFF5C5C);
+  static const Color green = Color(0XFF00C48C);
+  static const Color greenBg = Color(0XFFDBFFE7);
 }

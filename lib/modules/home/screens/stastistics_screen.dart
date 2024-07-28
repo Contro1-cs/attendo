@@ -1,7 +1,6 @@
 import 'package:attendo/modules/shared/widgets/colors.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class StastisticsScreen extends StatefulWidget {
   const StastisticsScreen({super.key});
@@ -15,12 +14,14 @@ class _StastisticsScreenState extends State<StastisticsScreen> {
   double benifitsVal = 0;
   double taxVal = 0;
   double inHandVal = 0;
+
   Map<String, double> salaryBreakdown = {
     "base": 10344,
     "insurance": 420,
     "benifits": 1055,
     "tax": 1299,
   };
+
   Map<String, double> stats = {
     "overall": 99,
     "attendancePercentile": 99.9,
