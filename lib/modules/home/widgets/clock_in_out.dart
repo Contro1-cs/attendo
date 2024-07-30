@@ -1,5 +1,4 @@
 import 'package:attendo/modules/shared/widgets/colors.dart';
-import 'package:attendo/modules/shared/widgets/snackbars.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,87 +15,92 @@ class ClockInOut extends StatefulWidget {
 
 class _ClockInOutState extends State<ClockInOut> {
   bool clockedIn = false;
-  TextEditingController _pinContoller = TextEditingController();
+  final TextEditingController _pinContoller = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   checkClockIn() {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    DocumentReference<Map<String, dynamic>> thisMonth = FirebaseFirestore
-        .instance
-        .collection('attendance')
-        .doc(uid)
-        .collection(DateTime.now().year.toString())
-        .doc(DateTime.now().month.toString());
-
-    thisMonth.get().then((response) {
-      if (response.exists) {
-        if (response.data()![DateTime.now().day.toString()] != null) {
-          if (response.data()![DateTime.now().day.toString()]
-              ['validateClockin']) {
-            setState(() {
-              clockedIn = true;
-            });
-          }
-        }
+    _firestore.collection("users").doc(uid).get().then((value) {
+      try {
+        setState(() {
+          clockedIn = value.data()!['status'];
+        });
+      } catch (e) {
+        setState(() {
+          clockedIn = false;
+        });
       }
     });
   }
 
   clockoutSession() {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    DocumentReference<Map<String, dynamic>> thisMonth = FirebaseFirestore
-        .instance
-        .collection('attendance')
-        .doc(uid)
-        .collection(DateTime.now().year.toString())
-        .doc(DateTime.now().month.toString());
-
-    thisMonth.get().then((response) {
-      if (response.exists) {
-        thisMonth.update({
-          DateTime.now().day.toString(): {
-            ...response.data()![DateTime.now().day.toString()],
-            "clockout": DateTime.now().toIso8601String(),
-            "validateClockout": true,
-            "sessionLength": DateTime.now()
-                .difference(DateTime.parse(
-                    response.data()![DateTime.now().day.toString()]['clockin']))
-                .inMinutes,
-          }
-        });
+    _firestore.collection("attendance").doc(uid).get().then((userData) {
+      String currentSessionId = userData.data()?['currentSessionId'] ?? '';
+      if (currentSessionId == "") {
+        return;
       }
-    }).then((value) {
-      successSnackBar(context,
-          'Clocked out at ${DateTime.now().hour.toString().padLeft(2, '0')}:${DateTime.now().minute.toString().padLeft(2, '0')}');
-      setState(() {
-        clockedIn = false;
+      _firestore
+          .collection('attendance')
+          .doc(uid)
+          .collection(DateTime.now().year.toString())
+          .doc(DateTime.now().month.toString())
+          .collection(DateTime.now().day.toString())
+          .doc(currentSessionId)
+          .update({
+        "updatedAt": DateTime.now().toIso8601String(),
+        "clockout": DateTime.now().toIso8601String(),
+        "validateClockout": true,
+      }).then((response) {
+        _firestore.collection('attendance').doc(uid).update({
+          "currentSessionId": "",
+          "status": false,
+        });
+        _firestore.collection("users").doc(uid).update({
+          "currentSession": "",
+          "status": false,
+        });
+      }).then((value) {
+        setState(() {
+          clockedIn = false;
+        });
       });
     });
   }
 
   clockinSession() {
     String uid = FirebaseAuth.instance.currentUser!.uid;
-    DocumentReference<Map<String, dynamic>> thisMonth = FirebaseFirestore
-        .instance
-        .collection('attendance')
-        .doc(uid)
-        .collection(DateTime.now().year.toString())
-        .doc(DateTime.now().month.toString());
-
-    thisMonth.get().then((response) {
-      if (response.exists) {
-        thisMonth.set({
-          DateTime.now().day.toString(): {
-            "clockin": DateTime.now().toIso8601String(),
-            "validateClockin": true,
-            "day": DateFormat('EEEE').format(DateTime.now()),
-          }
+    _firestore.collection('attendance').doc(uid).get().then((userAttendance) {
+      if (userAttendance.data() == null) {
+        _firestore.collection('attendance').doc(uid).set({
+          "currentSessionId": "",
         });
       }
-    }).then((value) {
-      successSnackBar(context,
-          'Clocked in at ${DateTime.now().hour.toString().padLeft(2, '0')}:${DateTime.now().minute.toString().padLeft(2, '0')}');
-      setState(() {
-        clockedIn = true;
+      _firestore
+          .collection('attendance')
+          .doc(uid)
+          .collection(DateTime.now().year.toString())
+          .doc(DateTime.now().month.toString())
+          .collection(DateTime.now().day.toString())
+          .add({
+        "createdAt": DateTime.now().toIso8601String(),
+        "updatedAt": DateTime.now().toIso8601String(),
+        "clockin": DateTime.now().toIso8601String(),
+        "validateClockin": true,
+        "day": DateFormat('EEEE').format(DateTime.now()),
+      }).then((response) {
+        _firestore.collection('attendance').doc(uid).set({
+          "currentSessionId": response.id,
+          "status": true,
+        });
+        _firestore.collection("users").doc(uid).update({
+          "currentSession": response.id,
+          "status": true,
+        });
+      }).then((value) {
+        setState(() {
+          clockedIn = true;
+        });
       });
     });
   }

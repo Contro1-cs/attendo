@@ -11,7 +11,7 @@ class PaycheckScreen extends StatefulWidget {
 }
 
 class _PaycheckScreenState extends State<PaycheckScreen> {
-  int _baseSalary = 10321;
+  final int _baseSalary = 10321;
   int _totalIncome = 0;
   List<IncomeModel> income = [];
 
